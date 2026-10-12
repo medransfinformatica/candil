@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>CANDIL OS — Herramientas Criollas para la Creación Digital</title>
+<meta name="description" content="Suite local de creación digital: PhotoCraft, VectorCraft, FilmCraft, LightCraft, EffectCraft, DesignCraft y PdfCraft bajo un mismo candil." />
+<style>
+  :root{
+    --bg:#121110;
+    --bg-2:#17150f;
+    --card:#1d1a16;
+    --card-2:#242019;
+    --line:#322b22;
+    --amber:#F59E0B;
+    --amber-2:#FBBF24;
+    --orange:#D97706;
+    --orange-deep:#B45309;
+    --ember:#EA580C;
+    --text:#f6efe3;
+    --muted:#a89d8c;
+    --dim:#6f665a;
+    --ok:#5FBF7A;
+    --off:#8a5a4a;
+    --radius:16px;
+    --shadow:0 18px 40px -22px rgba(0,0,0,.9);
+    --font:"Segoe UI",system-ui,-apple-system,Roboto,Helvetica,Arial,sans-serif;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{
+    font-family:var(--font);
+    color:var(--text);
+    background:
+      radial-gradient(1100px 600px at 12% -8%, rgba(217,119,6,.16), transparent 60%),
+      radial-gradient(900px 520px at 100% 0%, rgba(180,83,9,.12), transparent 55%),
+      linear-gradient(180deg,#121110 0%, #100f0d 100%);
+    background-attachment:fixed;
+    min-height:100vh;
+    -webkit-font-smoothing:antialiased;
+  }
+  body::before{
+    content:"";
+    position:fixed;inset:0;pointer-events:none;z-index:0;
+    background-image:radial-gradient(rgba(245,158,11,.045) 1px, transparent 1px);
+    background-size:26px 26px;
+    mask-image:linear-gradient(180deg,rgba(0,0,0,.9),transparent 85%);
+  }
+  .wrap{position:relative;z-index:1;max-width:1180px;margin:0 auto;padding:34px 22px 72px}
+
+  /* ---------- Header ---------- */
+  header{display:flex;align-items:center;gap:22px;flex-wrap:wrap;padding:8px 0 6px}
+  .lantern{width:74px;height:74px;flex:0 0 auto;filter:drop-shadow(0 0 18px rgba(245,158,11,.45))}
+  .brand{display:flex;flex-direction:column;gap:4px;min-width:0}
+  .brand h1{
+    margin:0;font-size:clamp(30px,5.2vw,50px);letter-spacing:.14em;font-weight:800;
+    background:linear-gradient(92deg,var(--amber-2),var(--orange) 46%,var(--orange-deep));
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+    line-height:1;
+  }
+  .brand p{margin:0;color:var(--muted);font-size:clamp(13px,2.4vw,16px);font-style:italic;letter-spacing:.02em}
+  .brand .tag{color:var(--dim);font-size:12px;letter-spacing:.22em;text-transform:uppercase;font-style:normal}
+
+  /* ---------- Control bar ---------- */
+  .bar{
+    margin:26px 0 30px;display:flex;gap:12px;align-items:center;flex-wrap:wrap;
+    background:linear-gradient(180deg,rgba(36,32,25,.75),rgba(29,26,22,.65));
+    border:1px solid var(--line);border-radius:var(--radius);
+    padding:14px 16px;backdrop-filter:blur(6px);box-shadow:var(--shadow)
+  }
+  .status-tally{display:flex;align-items:center;gap:9px;font-size:14px;color:var(--muted);margin-right:auto}
+  .status-tally b{color:var(--amber)}
+  .pulse{width:10px;height:10px;border-radius:50%;background:var(--amber);box-shadow:0 0 0 0 rgba(245,158,11,.5);animation:pulse 2s infinite}
+  @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(245,158,11,.45)}70%{box-shadow:0 0 0 12px rgba(245,158,11,0)}100%{box-shadow:0 0 0 0 rgba(245,158,11,0)}}
+  button.btn{
+    font-family:inherit;cursor:pointer;border-radius:10px;font-size:13.5px;font-weight:600;
+    padding:10px 15px;transition:.18s ease;border:1px solid transparent;
+  }
+  .btn-ghost{background:transparent;border-color:var(--line);color:var(--text)}
+  .btn-ghost:hover{border-color:var(--orange);color:var(--amber-2);background:rgba(217,119,6,.08)}
+  .btn-solid{background:linear-gradient(92deg,var(--orange),var(--orange-deep));color:#1a1206;box-shadow:0 10px 24px -12px rgba(217,119,6,.9)}
+  .btn-solid:hover{filter:brightness(1.08)}
+  .hint{
+    display:none;margin:-14px 0 28px;padding:14px 16px;border-radius:12px;
+    background:rgba(180,83,9,.1);border:1px solid rgba(245,158,11,.28);color:var(--muted);font-size:13.5px;line-height:1.6
+  }
+  .hint code{background:#0d0c0a;border:1px solid var(--line);border-radius:6px;padding:2px 6px;color:var(--amber-2);font-size:12.5px}
+  .hint.show{display:block}
+
+  /* ---------- Grid ---------- */
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:20px}
+  .card{
+    position:relative;display:flex;flex-direction:column;gap:14px;
+    background:linear-gradient(180deg,var(--card),var(--card-2));
+    border:1px solid var(--line);border-radius:var(--radius);padding:20px;
+    box-shadow:var(--shadow);overflow:hidden;transition:transform .2s ease,border-color .2s ease;
+  }
+  .card::after{
+    content:"";position:absolute;inset:0 0 auto 0;height:3px;
+    background:linear-gradient(90deg,var(--g1),var(--g2));opacity:.85
+  }
+  .card:hover{transform:translateY(-4px);border-color:var(--g1)}
+  .card::before{
+    content:"";position:absolute;top:-40%;right:-22%;width:210px;height:210px;border-radius:50%;
+    background:radial-gradient(circle,var(--g1),transparent 68%);opacity:.13;pointer-events:none
+  }
+  .card-top{display:flex;align-items:center;gap:14px}
+  .badge{
+    width:58px;height:58px;flex:0 0 auto;border-radius:15px;display:grid;place-items:center;
+    font-weight:800;font-size:19px;letter-spacing:.5px;color:#1a1206;
+    background:linear-gradient(140deg,var(--g2),var(--g1));
+    box-shadow:0 10px 22px -12px var(--g1),inset 0 0 0 1px rgba(255,255,255,.18)
+  }
+  .titles{min-width:0}
+  .tool-name{margin:0;font-size:21px;font-weight:800;letter-spacing:.01em}
+  .tool-ref{margin:2px 0 0;font-size:12.5px;color:var(--muted);letter-spacing:.02em}
+  .desc{margin:0;font-size:13.8px;line-height:1.6;color:#d8cfc0;flex:1}
+  .meta{
+    display:flex;align-items:center;justify-content:space-between;gap:10px;
+    border-top:1px dashed var(--line);padding-top:13px
+  }
+  .conn{display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--muted);min-width:0}
+  .dot{width:9px;height:9px;border-radius:50%;background:var(--dim);box-shadow:0 0 0 0 transparent;transition:.3s;flex:0 0 auto}
+  .conn.online .dot{background:var(--ok);box-shadow:0 0 10px rgba(95,191,122,.85);animation:pulse 2.4s infinite}
+  .conn.offline .dot{background:var(--off)}
+  .conn.checking .dot{background:var(--amber);animation:pulse .9s infinite}
+  .conn .port{color:var(--dim);font-variant-numeric:tabular-nums}
+  .conn.online .st{color:var(--ok)}
+  .conn.offline .st{color:var(--off)}
+  .open{
+    text-decoration:none;white-space:nowrap;font-size:13.5px;font-weight:700;
+    padding:10px 15px;border-radius:10px;color:#1a1206;
+    background:linear-gradient(92deg,var(--g2),var(--g1));
+    transition:.18s ease;box-shadow:0 10px 22px -14px var(--g1)
+  }
+  .open:hover{filter:brightness(1.09);transform:translateX(2px)}
+  .open[aria-disabled="true"]{filter:grayscale(.5) brightness(.85);cursor:not-allowed}
+
+  /* ---------- Footer ---------- */
+  footer{margin-top:44px;border-top:1px solid var(--line);padding-top:22px;display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;color:var(--dim);font-size:12.5px}
+  footer a{color:var(--muted);text-decoration:none}
+  footer a:hover{color:var(--amber-2)}
+  .kbd-hint{margin-top:8px;color:var(--dim);font-size:12.5px;line-height:1.7}
+  .kbd-hint code{background:#0d0c0a;border:1px solid var(--line);border-radius:6px;padding:2px 7px;color:var(--amber-2)}
+  @media (max-width:640px){
+    .wrap{padding:24px 16px 60px}
+    .status-tally{width:100%;margin:0 0 4px}
+    .grid{gap:16px}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <svg class="lantern" viewBox="0 0 64 74" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <defs>
+        <linearGradient id="flame" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#FBBF24"/><stop offset=".55" stop-color="#F59E0B"/><stop offset="1" stop-color="#B45309"/>
+        </linearGradient>
+        <linearGradient id="glass" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stop-color="rgba(245,158,11,.30)"/><stop offset="1" stop-color="rgba(180,83,9,.10)"/>
+        </linearGradient>
+      </defs>
+      <path d="M32 2v7" stroke="#6f665a" stroke-width="2.4" stroke-linecap="round"/>
+      <circle cx="32" cy="10" r="3" stroke="#B45309" stroke-width="2.2"/>
+      <path d="M21 15h22M19 21h26" stroke="#B45309" stroke-width="2.6" stroke-linecap="round"/>
+      <path d="M18 21l-3 30h34l-3-30" fill="url(#glass)" stroke="#D97706" stroke-width="2.4" stroke-linejoin="round"/>
+      <path d="M15 51h34" stroke="#D97706" stroke-width="2.6" stroke-linecap="round"/>
+      <path d="M20 57h24l-3 8H23z" fill="#B45309" stroke="#D97706" stroke-width="2.2" stroke-linejoin="round"/>
+      <path d="M32 30c4 5 6 8 6 12a6 6 0 0 1-12 0c0-4 2-7 6-12z" fill="url(#flame)"/>
+    </svg>
+    <div class="brand">
+      <span class="tag">Suite local de creación</span>
+      <h1>CANDIL OS</h1>
+      <p>Herramientas Criollas para la Creación Digital</p>
+    </div>
+  </header>
+
+  <div class="bar">
+    <div class="status-tally">
+      <span class="pulse" id="tallyPulse"></span>
+      <span><b id="tallyOn">0</b> de <b>7</b> herramientas encendidas</span>
+    </div>
+    <button class="btn btn-ghost" id="btnHelp" type="button">Cómo iniciar</button>
+    <button class="btn btn-solid" id="btnCheck" type="button">Comprobar conexiones</button>
+  </div>
+
+  <div class="hint" id="hint">
+    <p style="margin:0 0 8px"><strong style="color:var(--amber-2)">Poné el candil a andar:</strong> desde <code>candil-suite\</code> ejecutá el lanzador. Levanta cada app en su puerto con <code>trunk serve</code> (El Retrato, El Cincel, La Imprenta, El Folleto) o <code>cargo xtask web --serve</code> (La Tijera, El Farol, La Chispa), o compilá y serví los sitios ya construidos con el modo <em>static</em>.</p>
+    <p class="kbd-hint" style="margin:0">
+      Windows: <code>start-candil.bat</code> &nbsp;·&nbsp; modo estático: <code>start-candil.bat static</code> &nbsp;·&nbsp; frenar: <code>start-candil.bat stop</code><br>
+      Linux / macOS: <code>./start-candil.sh</code> &nbsp;·&nbsp; <code>./start-candil.sh build</code> &nbsp;·&nbsp; <code>./start-candil.sh stop</code>
+    </p>
+  </div>
+
+  <main class="grid" id="grid"></main>
+
+  <footer>
+    <span>CANDIL OS · <em>herramientas criollas</em> · base ArtCraft (Rust + WebAssembly) by <a href="https://github.com/storytold" target="_blank" rel="noopener">storytold</a></span>
+    <span>Puertos locales 8081 – 8087 · 127.0.0.1</span>
+  </footer>
+</div>
+
+<script>
+  const TOOLS = [
+    { folder:"photocraft",  name:"El Retrato",  ini:"ER", port:8081, ref:"Alternativa a Photoshop / PhotoCraft",  g1:"#B45309", g2:"#F59E0B",
+      desc:"Edición de imágenes y pintura digital. Capas, máscaras, pinceles, color y retoque de alta fidelidad." },
+    { folder:"vectorcraft", name:"El Cincel",   ini:"EC", port:8082, ref:"Alternativa a Illustrator / VectorCraft", g1:"#B45309", g2:"#D97706",
+      desc:"Gráficos vectoriales e ilustración. Trazados, formas, texto y composición escalable sin pérdida." },
+    { folder:"filmcraft",   name:"La Tijera",   ini:"TJ", port:8083, ref:"Alternativa a Premiere Pro / FilmCraft",  g1:"#EA580C", g2:"#F59E0B",
+      desc:"Edición de video no lineal y montaje. Línea de tiempo, corte, audio y exportación." },
+    { folder:"lightcraft",  name:"El Farol",    ini:"FL", port:8084, ref:"Alternativa a Lightroom / LightCraft",     g1:"#CA8A04", g2:"#FBBF24", url:"http://localhost:8084/?workers=0",
+      desc:"Revelado RAW y gestión de color. Catálogo, curvas, calibración y revelado por lotes." },
+    { folder:"effectcraft", name:"La Chispa",   ini:"CH", port:8085, ref:"Alternativa a After Effects / EffectCraft",g1:"#DC2626", g2:"#F59E0B",
+      desc:"Composición visual y efectos especiales. Animación, keyframes, nodos y post-producción." },
+    { folder:"designcraft", name:"La Imprenta", ini:"IM", port:8086, ref:"Alternativa a InDesign / DesignCraft",    g1:"#B45309", g2:"#FBBF24",
+      desc:"Maquetación editorial y diseño de pliegos. Grillas, tipografía y armado para impresión." },
+    { folder:"pdfcraft",    name:"El Folleto",  ini:"FO", port:8087, ref:"Alternativa a Acrobat Pro / PdfCraft",    g1:"#92400E", g2:"#D97706",
+      desc:"Gestión, edición y firma de PDFs. Formularios, anotaciones, OCR y exportación." }
+  ];
+
+  const grid = document.getElementById("grid");
+  const tallyOn = document.getElementById("tallyOn");
+  const tallyPulse = document.getElementById("tallyPulse");
+
+  TOOLS.forEach(t => {
+    const a = document.createElement("article");
+    a.className = "card";
+    a.style.setProperty("--g1", t.g1);
+    a.style.setProperty("--g2", t.g2);
+    a.innerHTML = `
+      <div class="card-top">
+        <div class="badge" aria-hidden="true">${t.ini}</div>
+        <div class="titles">
+          <h2 class="tool-name">${t.name}</h2>
+          <p class="tool-ref">${t.ref}</p>
+        </div>
+      </div>
+      <p class="desc">${t.desc}</p>
+      <div class="meta">
+        <div class="conn checking" id="conn-${t.port}" title="Estado del servicio local">
+          <span class="dot"></span>
+          <span class="st">Verificando…</span>
+          <span class="port">:${t.port}</span>
+        </div>
+        <a class="open" href="${t.url || "http://localhost:" + t.port}" target="_blank" rel="noopener">Abrir Herramienta →</a>
+      </div>`;
+    grid.appendChild(a);
+  });
+
+  const connEls = () => TOOLS.map(t => document.getElementById("conn-" + t.port));
+
+  function ping(port, timeoutMs = 2600) {
+    return new Promise(resolve => {
+      const ctrl = new AbortController();
+      const timer = setTimeout(() => { ctrl.abort(); resolve(false); }, timeoutMs);
+      fetch("http://localhost:" + port + "/", { mode: "no-cors", cache: "no-store", signal: ctrl.signal })
+        .then(() => { clearTimeout(timer); resolve(true); })
+        .catch(() => { clearTimeout(timer); resolve(false); });
+    });
+  }
+
+  async function checkAll() {
+    const els = connEls();
+    els.forEach(el => {
+      el.classList.remove("online", "offline");
+      el.classList.add("checking");
+      el.querySelector(".st").textContent = "Verificando…";
+    });
+    let online = 0;
+    await Promise.all(TOOLS.map(async (t, i) => {
+      const ok = await ping(t.port);
+      const el = els[i];
+      el.classList.remove("checking");
+      el.classList.add(ok ? "online" : "offline");
+      el.querySelector(".st").textContent = ok ? "En línea" : "Apagado";
+      if (ok) online++;
+    }));
+    tallyOn.textContent = online;
+    tallyPulse.style.background = online ? "#5FBF7A" : "#F59E0B";
+  }
+
+  document.getElementById("btnCheck").addEventListener("click", checkAll);
+  const hint = document.getElementById("hint");
+  document.getElementById("btnHelp").addEventListener("click", () => hint.classList.toggle("show"));
+  document.querySelectorAll(".open").forEach(a => a.addEventListener("click", () => {}));
+
+  window.addEventListener("load", () => setTimeout(checkAll, 350));
+</script>
+</body>
+</html>

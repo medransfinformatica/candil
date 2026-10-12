@@ -1,0 +1,14 @@
+# CORS / Cross-Origin-Resource-Policy para Apache (XAMPP)
+<IfModule mod_headers.c>
+    Header always set Cross-Origin-Resource-Policy "cross-origin"
+    Header always set Access-Control-Allow-Origin "*"
+    Header always set Access-Control-Allow-Methods "GET,HEAD,POST,PUT,PATCH,DELETE,OPTIONS"
+    Header always set Access-Control-Allow-Headers "*"
+    Header always set Access-Control-Expose-Headers "*"
+</IfModule>
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteCond %{REQUEST_METHOD} =OPTIONS
+    RewriteRule ^ - [R=204,L]
+</IfModule>
